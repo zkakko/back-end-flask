@@ -17,6 +17,13 @@ def create_token(user):
     token = jwt.encode(payload=payload, key=my_secret)
     return token
 
+def authentication():
+    auth = request.headers.get('Authentication:Bearer')
+    if auth:
+        token = auth[7:]
+        payload = jwt.decode(token, my_secret,algorithms=['HS256'])
+        user = payload.get('user')
+        return user
 
 @app.route('/')
 def hi():
@@ -37,6 +44,12 @@ def login():
             return {"result":"OK","token":token}
         else:
             return {"result":"fail", "reason":"password is wrong"}
+        
+@app.route('/status',methods=['GET'])
+def status():
+    authentication()
+
+   
         
 if __name__ == '__main__':
     app.run(debug=True)

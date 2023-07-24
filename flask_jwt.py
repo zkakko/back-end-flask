@@ -24,7 +24,7 @@ def authentication():
         token = auth[7:]
         payload = jwt.decode(token, my_secret,algorithms=['HS256'])
         user = payload.get('user')
-        app.logger.debug(user)
+        #app.logger.debug(user)
         return user
 
 @app.route('/')

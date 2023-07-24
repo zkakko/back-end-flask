@@ -18,11 +18,13 @@ def create_token(user):
     return token
 
 def authentication():
-    auth = request.headers.get('Authentication:Bearer')
+    app.logger.debug(request.headers)
+    auth = request.headers.get('Authorization')
     if auth:
         token = auth[7:]
         payload = jwt.decode(token, my_secret,algorithms=['HS256'])
         user = payload.get('user')
+        app.logger.debug(user)
         return user
 
 @app.route('/')
@@ -32,9 +34,6 @@ def hi():
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-#        user = request.form.get['user']
-#        password = request.form.get['password']
-        app.logger.debug(request.json.get('user'))
         user = request.json.get('user')
         password = request.json.get('password')
 
@@ -45,9 +44,13 @@ def login():
         else:
             return {"result":"fail", "reason":"password is wrong"}
         
-@app.route('/status',methods=['GET'])
+@app.route('/status',methods=['GET','POST'])
 def status():
-    authentication()
+    user = authentication()
+    if user:
+        return {"result":"ok", "current_user":user}
+    else:
+        return {"result":"fail", "reason":"please log in first"}
 
    
         

@@ -21,7 +21,7 @@ def authentication():
     app.logger.debug(request.headers)
     auth = request.headers.get('Authorization')
     if auth:
-        token = auth[7:]
+        token = auth.split(" ")[1]
         payload = jwt.decode(token, my_secret,algorithms=['HS256'])
         user = payload.get('user')
         #app.logger.debug(user)
